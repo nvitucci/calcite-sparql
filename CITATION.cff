@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: calcite-sparql
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Nicola
+    family-names: Vitucci
+    email: nicola.vitucci@gmail.com
+repository-code: "https://github.com/nvitucci/calcite-sparql"
+version: 0.0.1
+date-released: 2022-01-23

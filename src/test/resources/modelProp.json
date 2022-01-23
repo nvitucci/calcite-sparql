@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "defaultSchema": "sparql",
+  "schemas": [
+    {
+      "name": "sparql",
+      "type": "custom",
+      "factory": "com.datagrafting.sql2sparql.calcite.SparqlSchemaFactory",
+      "operand": {
+        "endpoint": "jdbc:jena:mem:dataset=data.nq",
+        "tableMode": "property"
+      }
+    }
+  ]
+}

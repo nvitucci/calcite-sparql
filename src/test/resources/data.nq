@@ -1,0 +1,22 @@
+<http://www.example.com/id/johndoe> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://www.example.com/graph/a> .
+<http://www.example.com/id/johndoe> <http://xmlns.com/foaf/0.1/name> "John Doe" <http://www.example.com/graph/a> .
+<http://www.example.com/id/johndoe> <http://xmlns.com/foaf/0.1/title> "Mr" <http://www.example.com/graph/a> .
+<http://www.example.com/id/johndoe> <http://xmlns.com/foaf/0.1/givenname> "John" <http://www.example.com/graph/a> .
+<http://www.example.com/id/johndoe> <http://xmlns.com/foaf/0.1/family_name> "Doe" <http://www.example.com/graph/a> .
+<http://www.example.com/id/johndoe> <http://xmlns.com/foaf/0.1/nick> "Johnny" <http://www.example.com/graph/a> .
+<http://www.example.com/id/johndoe> <http://xmlns.com/foaf/0.1/mbox_sha1sum> "2a6f4e470a1b9ef493f4ac83aa9456102a14f5c4" <http://www.example.com/graph/a> .
+<http://www.example.com/id/johndoe> <http://xmlns.com/foaf/0.1/homepage> <http://www.example.com/pages/johndoe> <http://www.example.com/graph/a> .
+<http://www.example.com/id/johndoe> <http://xmlns.com/foaf/0.1/age> "42"^^<http://www.w3.org/2001/XMLSchema#integer> <http://www.example.com/graph/a> .
+<http://www.example.com/id/johndoe> <http://xmlns.com/foaf/0.1/knows> <http://www.example.com/id/janedoe> <http://www.example.com/graph/a> .
+<http://www.example.com/id/janedoe> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://www.example.com/graph/a> .
+<http://www.example.com/id/janedoe> <http://xmlns.com/foaf/0.1/name> "Jane Doe" <http://www.example.com/graph/a> .
+<http://www.example.com/id/janedoe> <http://xmlns.com/foaf/0.1/title> "Mr" <http://www.example.com/graph/a> .
+<http://www.example.com/id/janedoe> <http://xmlns.com/foaf/0.1/givenname> "Jane" <http://www.example.com/graph/a> .
+<http://www.example.com/id/janedoe> <http://xmlns.com/foaf/0.1/family_name> "Doe" <http://www.example.com/graph/a> .
+<http://www.example.com/id/janedoe> <http://xmlns.com/foaf/0.1/nick> "Jay" <http://www.example.com/graph/a> .
+<http://www.example.com/id/janedoe> <http://xmlns.com/foaf/0.1/mbox_sha1sum> "90045cddf482e1bd1773fb8bb9cd8a9e75c9c0a4" <http://www.example.com/graph/a> .
+<http://www.example.com/id/janedoe> <http://xmlns.com/foaf/0.1/homepage> <http://www.example.com/pages/janedoe> <http://www.example.com/graph/a> .
+<http://www.example.com/id/janedoe> <http://xmlns.com/foaf/0.1/age> "40"^^<http://www.w3.org/2001/XMLSchema#integer> <http://www.example.com/graph/a> .
+<http://www.example.com/id/janedoe> <http://xmlns.com/foaf/0.1/knows> <http://www.example.com/id/johndoe> <http://www.example.com/graph/a> .
+<http://www.example.com/id/thegroup> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Group> <http://www.example.com/graph/a> .
+<http://www.example.com/id/thegroup> <http://xmlns.com/foaf/0.1/member> <http://www.example.com/id/johndoe> <http://www.example.com/graph/a> .
