@@ -26,11 +26,11 @@ import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.type.RelDataType;
 import org.apache.calcite.rel.type.RelDataTypeFactory;
 import org.apache.calcite.sql.type.SqlTypeName;
+import org.apache.calcite.util.Pair;
 
 import com.datagrafting.sql2sparql.calcite.rel.SparqlClassRel;
 import com.datagrafting.sql2sparql.calcite.rel.SparqlClassTableScan;
 import com.datagrafting.sql2sparql.sparql.SparqlEndpoint;
-import org.apache.calcite.util.Pair;
 
 public class SparqlClassTable extends SparqlTable {
   // TODO: init in config

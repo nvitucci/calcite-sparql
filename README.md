@@ -34,7 +34,7 @@ The SPARQL endpoint in this case is a Jena in-memory endpoint created from a loc
 
 ### Basic Usage
 
-_More detailed examples coming soon. In the meantime, [tests](src/test/java/com/datagrafting/sql2sparql/sparql/SparqlClassTableTest.java) can be used as a reference._
+_More detailed examples coming soon. In the meantime, [tests](core/src/test/java/com/datagrafting/sql2sparql/sparql/SparqlClassTableTest.java) can be used as a reference._
 
 ```java
 Connection connection = DriverManager.getConnection(
@@ -49,6 +49,18 @@ ResultSet resultSet = statement.executeQuery(query);
 - `WHERE` (with `=`, `<>`, `<`, `>`, `<=`, `>=`)
 - `ORDER BY`
 - `LIMIT`
+
+## Running the examples
+
+```shell
+cd core
+mvn clean package -DskipTests
+cd ..
+
+cd example
+mv clean package
+/path/to/java -cp target/classes:../core/target/calcite-sparql-core-0.0.1-SNAPSHOT.jar com.datagrafting.sql2sparql.examples.SparqlClassTableRemote
+```
 
 ## Releasing
 

@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Range;
 import org.apache.calcite.plan.RelOptCluster;
 import org.apache.calcite.plan.RelTraitSet;
 import org.apache.calcite.rel.RelNode;
@@ -34,6 +33,8 @@ import org.apache.calcite.sql.SqlOperator;
 import org.apache.calcite.sql.type.SqlTypeFamily;
 import org.apache.calcite.util.NlsString;
 import org.apache.calcite.util.Sarg;
+
+import com.google.common.collect.Range;
 
 public class SparqlClassFilter extends Filter implements SparqlClassRel {
   public final static String PLACEHOLDER = "_VAR_";

@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>groupId</groupId>
-    <artifactId>calcite-sparql</artifactId>
+    <groupId>com.datagrafting</groupId>
+    <artifactId>calcite-sparql-core</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
@@ -87,11 +87,37 @@
                         <removeUnusedImports/>
 
                         <licenseHeader>
-                            <file>${basedir}/license-header.txt</file>
+                            <file>${basedir}/../license-header.txt</file>
                         </licenseHeader>
                     </java>
 
                     <ratchetFrom>origin/main</ratchetFrom>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
                 </configuration>
             </plugin>
         </plugins>
