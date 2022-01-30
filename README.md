@@ -34,14 +34,26 @@ The SPARQL endpoint in this case is a Jena in-memory endpoint created from a loc
 
 ### Basic Usage
 
-_More detailed examples coming soon. In the meantime, [tests](core/src/test/java/com/datagrafting/sql2sparql/sparql/SparqlClassTableTest.java) can be used as a reference._
+- Java [example](examples/java/src/main/java/com/datagrafting/sql2sparql/examples/SparqlClassTableRemote.java)
+- Python (Jupyter notebook) examples using [jaydebeapi](examples/python/Query%20DBPedia%20with%20jaydebeapi.ipynb) and [Apache Arrow](examples/python/Query%20DBPedia%20with%20Apache%20Arrow.ipynb)
 
-```java
-Connection connection = DriverManager.getConnection(
-    "jdbc:calcite:model=" + modelPath);
-Statement statement = connection.createStatement();
-ResultSet resultSet = statement.executeQuery(query);
+### Running the examples
+
+```shell
+cd core
+mvn clean package -DskipTests
+cd ..
 ```
+
+For the Java examples:
+
+```shell
+cd example
+mv clean package
+/path/to/java -cp target/classes:../core/target/calcite-sparql-core-0.0.1-SNAPSHOT.jar com.datagrafting.sql2sparql.examples.SparqlClassTableRemote
+```
+
+For the Python examples, Python 3 and Jupyter Notebook need to be installed first. Then, the notebooks can be run from the [examples/python](examples/python) directory.
 
 ### Pushed-down SQL constructs
 
@@ -49,18 +61,6 @@ ResultSet resultSet = statement.executeQuery(query);
 - `WHERE` (with `=`, `<>`, `<`, `>`, `<=`, `>=`)
 - `ORDER BY`
 - `LIMIT`
-
-## Running the examples
-
-```shell
-cd core
-mvn clean package -DskipTests
-cd ..
-
-cd example
-mv clean package
-/path/to/java -cp target/classes:../core/target/calcite-sparql-core-0.0.1-SNAPSHOT.jar com.datagrafting.sql2sparql.examples.SparqlClassTableRemote
-```
 
 ## Releasing
 

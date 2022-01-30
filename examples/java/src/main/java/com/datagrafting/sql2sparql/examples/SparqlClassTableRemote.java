@@ -80,10 +80,6 @@ public class SparqlClassTableRemote {
           obj = resultSet.getObject(col);
         } catch (ClassCastException e) {
           // The type for this field in this row is different from the inferred column type
-
-          // TODO: log
-          // System.out.println("ClassCastException on " + resultSet.getMetaData().getColumnName(col) + ": " + e);
-
           // Replace the non-assignable value with null
           obj = null;
         }
