@@ -33,8 +33,6 @@ public class SparqlClassTableRemote {
     URL modelPath = SparqlClassTableRemote.class.getClassLoader().getResource("modelClassRemote.json");
 
     Class.forName("org.apache.calcite.avatica.remote.Driver");
-    Class.forName("org.apache.jena.jdbc.remote.RemoteEndpointDriver");
-
     Connection connection = DriverManager.getConnection("jdbc:calcite:model=" + Objects.requireNonNull(modelPath).getPath(), info);
     
     String query = ""

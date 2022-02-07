@@ -53,6 +53,12 @@ public class SparqlEndpoint {
     info.setProperty(JenaDriver.PARAM_JDBC_COMPATIBILITY, Integer.toString(compatibility));
     this.info = info;
 
+    // Make sure the driver is loaded. Without this, getConnection() may fail.
+    try {
+      Class.forName("org.apache.jena.jdbc.remote.RemoteEndpointDriver");
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException("Class not found", e);
+    }
     conn = DriverManager.getConnection(url, info);
   }
 
