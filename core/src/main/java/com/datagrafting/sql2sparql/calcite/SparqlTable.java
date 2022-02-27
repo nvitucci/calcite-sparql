@@ -52,7 +52,7 @@ public abstract class SparqlTable extends AbstractTable implements TranslatableT
 
   @Override
   public <T> Queryable<T> asQueryable(QueryProvider queryProvider, SchemaPlus schema, String tableName) {
-    return new SparqlQueryable<>(queryProvider, schema, this, tableName);
+    return new SparqlQueryable<T>(queryProvider, schema, this, tableName);
   }
 
   @Override
@@ -76,7 +76,8 @@ public abstract class SparqlTable extends AbstractTable implements TranslatableT
     } catch (SQLException e) {
       throw new RuntimeException("SQL Exception", e);
     }
-    return new AbstractEnumerable<>() {
+
+    return new AbstractEnumerable<Object>() {
       @Override
       public Enumerator<Object> enumerator() {
         return new SparqlEnumerator(results);

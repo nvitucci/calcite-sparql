@@ -1,5 +1,5 @@
 /**
- * Copyright 2021-2022 Nicola Vitucci
+ * Copyright 2022 Nicola Vitucci
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,26 +17,15 @@ package com.datagrafting.sql2sparql.calcite.config;
 
 import java.util.List;
 
-public class Config {
-  private final String endpoint;
-  private final TableMode tableMode;
-  private final List<TableMapping> tableMappings;
+public class TableMapping {
+  private String name;
+  private List<ColumnSpec> columns;
 
-  public Config(String endpoint, TableMode tableMode, List<TableMapping> tableMappings) {
-    this.endpoint = endpoint;
-    this.tableMode = tableMode;
-    this.tableMappings = tableMappings;
+  public String getName() {
+    return name;
   }
 
-  public String getEndpoint() {
-    return endpoint;
-  }
-
-  public TableMode getTableMode() {
-    return tableMode;
-  }
-
-  public List<TableMapping> getTableMappings() {
-    return tableMappings;
+  public List<ColumnSpec> getColumns() {
+    return columns;
   }
 }

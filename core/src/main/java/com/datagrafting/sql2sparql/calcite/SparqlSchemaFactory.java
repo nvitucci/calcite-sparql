@@ -16,15 +16,19 @@
 package com.datagrafting.sql2sparql.calcite;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.calcite.schema.Schema;
 import org.apache.calcite.schema.SchemaFactory;
 import org.apache.calcite.schema.SchemaPlus;
 
 import com.datagrafting.sql2sparql.calcite.config.Config;
+import com.datagrafting.sql2sparql.calcite.config.TableMapping;
 import com.datagrafting.sql2sparql.calcite.config.TableMode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SuppressWarnings("UnusedDeclaration")
 public class SparqlSchemaFactory implements SchemaFactory {
@@ -32,8 +36,10 @@ public class SparqlSchemaFactory implements SchemaFactory {
   public Schema create(SchemaPlus parentSchema, String name, Map<String, Object> operand) {
     String endpointOp = (String) operand.get("endpoint");
     String tableModeOp = (String) operand.get("tableMode");
+    List<?> tableMappingsOp = (List<?>) operand.get("tableMappings");
 
     TableMode tableMode;
+    List<TableMapping> tableMappings = null;
 
     if (tableModeOp == null) {
       tableMode = TableMode.PROPERTY;
@@ -41,8 +47,15 @@ public class SparqlSchemaFactory implements SchemaFactory {
       tableMode = TableMode.valueOf(tableModeOp.toUpperCase(Locale.ROOT));
     }
 
+    if (tableMappingsOp != null) {
+      ObjectMapper mapper = new ObjectMapper();
+      tableMappings = tableMappingsOp.stream()
+                           .map(item -> mapper.convertValue(item, TableMapping.class))
+                           .collect(Collectors.toList());
+    }
+
     // Maybe evaluate usage of Builder pattern
-    Config config = new Config(endpointOp, tableMode);
+    Config config = new Config(endpointOp, tableMode, tableMappings);
 
     try {
       return new SparqlSchema(config, parentSchema, name);

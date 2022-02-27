@@ -142,6 +142,7 @@ public class SparqlEndpoint {
 
   public List<Pair<String, String>> getPropertiesPerClass(String type, int limit)
       throws SQLException, URISyntaxException {
+    Set<String> propNames = new HashSet<>();
     List<Pair<String, String>> props = new ArrayList<>();
     ResultSet results = query(String.format(""
         + "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
@@ -158,7 +159,16 @@ public class SparqlEndpoint {
 
     while (results.next()) {
       Node p = (Node) results.getObject("p");
-      props.add(new Pair<>(getNamespacedName(p), p.getURI()));
+      String name = getNamespacedName(p);
+      String uri = p.getURI();
+
+      // Temporary hack to prevent similar property names to generate duplicate columns
+      if (propNames.contains(name)) {
+        name += "_0";
+      }
+
+      propNames.add(name);
+      props.add(new Pair<>(name, uri));
     }
 
     return props;

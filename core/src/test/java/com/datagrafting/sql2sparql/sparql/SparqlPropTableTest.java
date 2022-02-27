@@ -133,7 +133,7 @@ public class SparqlPropTableTest {
 
     checkPlan(connection, query, ""
         + "SparqlPropToEnumerableConverter\n"
-        + "  SparqlPropLimit\n"
+        + "  SparqlPropSort(fetch=[1])\n"
         + "    SparqlPropTableScan(table=[[sparql, name]])\n"
     );
 
@@ -141,6 +141,33 @@ public class SparqlPropTableTest {
         + "name.s [java.lang.String] | name.o [java.lang.String]\n"
         + "-----------------------------------------------------\n"
         + "http://www.example.com/id/janedoe [java.lang.String] | Jane Doe [java.lang.String]\n"
+    );
+  }
+
+  @Test
+  public void testSelectLimit1000() throws SQLException {
+    String query = ""
+        + "SELECT * "
+        + "FROM name "
+        + "LIMIT 1000";
+
+    checkPlan(connection, query, true, ""
+        + "LogicalSort(fetch=[1000])\n"
+        + "  LogicalProject(s=[$0], o=[$1])\n"
+        + "    SparqlPropTableScan(table=[[sparql, name]])\n"
+    );
+
+    checkPlan(connection, query, ""
+        + "SparqlPropToEnumerableConverter\n"
+        + "  SparqlPropSort(fetch=[1000])\n"
+        + "    SparqlPropTableScan(table=[[sparql, name]])\n"
+    );
+
+    checkResults(connection, query, true, false, ""
+        + "name.s [java.lang.String] | name.o [java.lang.String]\n"
+        + "-----------------------------------------------------\n"
+        + "http://www.example.com/id/janedoe [java.lang.String] | Jane Doe [java.lang.String]\n"
+        + "http://www.example.com/id/johndoe [java.lang.String] | John Doe [java.lang.String]\n"
     );
   }
 

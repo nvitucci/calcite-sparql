@@ -18,6 +18,7 @@ package com.datagrafting.sql2sparql.calcite.rel;
 import org.apache.calcite.plan.RelOptCluster;
 import org.apache.calcite.plan.RelOptCost;
 import org.apache.calcite.plan.RelOptPlanner;
+import org.apache.calcite.plan.RelOptUtil;
 import org.apache.calcite.plan.RelTraitSet;
 import org.apache.calcite.rel.RelCollation;
 import org.apache.calcite.rel.RelFieldCollation;
@@ -60,12 +61,9 @@ public class SparqlClassSort extends Sort implements SparqlClassRel {
   @Override
   public RelOptCost computeSelfCost(RelOptPlanner planner, RelMetadataQuery mq) {
     RelOptCost cost = super.computeSelfCost(planner, mq);
-    // TODO: check this
-    if (!collation.getFieldCollations().isEmpty()) {
-      return cost.multiplyBy(0.05);
-    } else {
-      return cost;
-    }
+
+    // TODO: what if cost null?
+    return cost.multiplyBy(RelOptUtil.EPSILON);
   }
 
 }

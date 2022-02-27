@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "defaultSchema": "sparql",
+  "schemas": [
+    {
+      "name": "sparql",
+      "type": "custom",
+      "factory": "com.datagrafting.sql2sparql.calcite.SparqlSchemaFactory",
+      "operand": {
+        "endpoint": "jdbc:jena:mem:dataset=data.nq",
+        "tableMode": "mapping",
+        "tableMappings": [
+          {
+            "name": "Person",
+            "columns": [
+              {
+                "name": "name",
+                "property": "http://xmlns.com/foaf/0.1/name"
+              },
+              {
+                "name": "age",
+                "property": "http://xmlns.com/foaf/0.1/age"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

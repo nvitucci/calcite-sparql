@@ -17,5 +17,6 @@ package com.datagrafting.sql2sparql.calcite.config;
 
 public enum TableMode {
   PROPERTY,
-  CLASS
+  CLASS,
+  MAPPING
 }

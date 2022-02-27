@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Examples directory
+- `MAPPING` mode
 
 ## [0.0.1] - 2022-01-23
 

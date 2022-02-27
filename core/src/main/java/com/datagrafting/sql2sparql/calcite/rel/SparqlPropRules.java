@@ -18,12 +18,8 @@ package com.datagrafting.sql2sparql.calcite.rel;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.calcite.adapter.enumerable.EnumerableLimit;
 import org.apache.calcite.plan.Convention;
-import org.apache.calcite.plan.RelOptCluster;
 import org.apache.calcite.plan.RelOptRule;
-import org.apache.calcite.plan.RelOptRuleCall;
-import org.apache.calcite.plan.RelRule;
 import org.apache.calcite.plan.RelTraitSet;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.convert.ConverterRule;
@@ -34,49 +30,10 @@ import org.apache.calcite.rex.RexNode;
 
 public class SparqlPropRules {
   public static final List<RelOptRule> RULES = Arrays.asList(
-      SparqlLimitRule.Config.DEFAULT.toRule(),
       SparqlSortRule.INSTANCE,
       SparqlProjectRule.INSTANCE,
       SparqlFilterRule.INSTANCE
   );
-
-  // TODO: "convert" to ConverterRule?
-  public static class SparqlLimitRule extends RelRule<SparqlLimitRule.Config> {
-    protected SparqlLimitRule(Config config) {
-      super(config);
-    }
-
-    @Override
-    public void onMatch(RelOptRuleCall call) {
-      final EnumerableLimit limit = call.rel(0);
-      final RelNode converted = convert(limit);
-      if (converted != null) {
-        call.transformTo(converted);
-      }
-    }
-
-    public RelNode convert(RelNode rel) {
-      final EnumerableLimit limit = (EnumerableLimit) rel;
-      RelOptCluster cluster = limit.getCluster();
-      RelTraitSet traitSet = limit.getTraitSet().replace(SparqlPropRel.CONVENTION);
-      return new SparqlPropLimit(cluster, traitSet, convert(limit.getInput(), SparqlPropRel.CONVENTION), limit.fetch);
-    }
-
-    public interface Config extends RelRule.Config {
-      Config DEFAULT = EMPTY
-          .withOperandSupplier(b0 ->
-              b0.operand(EnumerableLimit.class)
-                .oneInput(b1 ->
-                    b1.operand(SparqlPropToEnumerableConverter.class)
-                      .anyInputs()))
-          .as(Config.class);
-
-      @Override
-      default SparqlLimitRule toRule() {
-        return new SparqlLimitRule(this);
-      }
-    }
-  }
 
   private static class SparqlSortRule extends ConverterRule {
     private static final SparqlSortRule INSTANCE = Config.INSTANCE

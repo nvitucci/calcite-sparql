@@ -85,7 +85,7 @@ public class SparqlClassTableTest {
 
     checkPlan(connection, query, ""
         + "SparqlClassToEnumerableConverter\n"
-        + "  SparqlClassLimit\n"
+        + "  SparqlClassSort(fetch=[1])\n"
         + "    SparqlClassTableScan(table=[[sparql, Person]])\n"
     );
 
@@ -93,6 +93,33 @@ public class SparqlClassTableTest {
         + "Person.s [java.lang.String] | Person.xmlns_family_name [java.lang.String] | Person.xmlns_knows [java.lang.String] | Person.xmlns_name [java.lang.String] | Person.xmlns_title [java.lang.String] | Person.xmlns_homepage [java.lang.String] | Person.xmlns_mbox_sha1sum [java.lang.String] | Person.xmlns_age [java.lang.Long] | Person.xmlns_givenname [java.lang.String] | Person.xmlns_nick [java.lang.String]\n"
         + "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
         + "http://www.example.com/id/janedoe [java.lang.String] | Doe [java.lang.String] | http://www.example.com/id/johndoe [java.lang.String] | Jane Doe [java.lang.String] | Mr [java.lang.String] | http://www.example.com/pages/janedoe [java.lang.String] | 90045cddf482e1bd1773fb8bb9cd8a9e75c9c0a4 [java.lang.String] | 40 [java.lang.Long] | Jane [java.lang.String] | Jay [java.lang.String]\n"
+    );
+  }
+
+  @Test
+  public void testSelectAllLimit1000() throws SQLException {
+    String query = ""
+        + "SELECT * "
+        + "FROM Person "
+        + "LIMIT 1000";
+
+    checkPlan(connection, query, true, ""
+        + "LogicalSort(fetch=[1000])\n"
+        + "  LogicalProject(s=[$0], xmlns_family_name=[$1], xmlns_knows=[$2], xmlns_name=[$3], xmlns_title=[$4], xmlns_homepage=[$5], xmlns_mbox_sha1sum=[$6], xmlns_age=[$7], xmlns_givenname=[$8], xmlns_nick=[$9])\n"
+        + "    SparqlClassTableScan(table=[[sparql, Person]])\n"
+    );
+
+    checkPlan(connection, query, ""
+        + "SparqlClassToEnumerableConverter\n"
+        + "  SparqlClassSort(fetch=[1000])\n"
+        + "    SparqlClassTableScan(table=[[sparql, Person]])\n"
+    );
+
+    checkResults(connection, query, true, false, ""
+        + "Person.s [java.lang.String] | Person.xmlns_family_name [java.lang.String] | Person.xmlns_knows [java.lang.String] | Person.xmlns_name [java.lang.String] | Person.xmlns_title [java.lang.String] | Person.xmlns_homepage [java.lang.String] | Person.xmlns_mbox_sha1sum [java.lang.String] | Person.xmlns_age [java.lang.Long] | Person.xmlns_givenname [java.lang.String] | Person.xmlns_nick [java.lang.String]\n"
+        + "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n"
+        + "http://www.example.com/id/janedoe [java.lang.String] | Doe [java.lang.String] | http://www.example.com/id/johndoe [java.lang.String] | Jane Doe [java.lang.String] | Mr [java.lang.String] | http://www.example.com/pages/janedoe [java.lang.String] | 90045cddf482e1bd1773fb8bb9cd8a9e75c9c0a4 [java.lang.String] | 40 [java.lang.Long] | Jane [java.lang.String] | Jay [java.lang.String]\n"
+        + "http://www.example.com/id/johndoe [java.lang.String] | Doe [java.lang.String] | http://www.example.com/id/janedoe [java.lang.String] | John Doe [java.lang.String] | Mr [java.lang.String] | http://www.example.com/pages/johndoe [java.lang.String] | 2a6f4e470a1b9ef493f4ac83aa9456102a14f5c4 [java.lang.String] | 42 [java.lang.Long] | John [java.lang.String] | Johnny [java.lang.String]\n"
     );
   }
 
@@ -162,7 +189,7 @@ public class SparqlClassTableTest {
     checkPlan(connection, query, ""
         + "SparqlClassToEnumerableConverter\n"
         + "  SparqlClassProject(s=[$0], xmlns_name=[$3])\n"
-        + "    SparqlClassLimit\n"
+        + "    SparqlClassSort(fetch=[1])\n"
         + "      SparqlClassTableScan(table=[[sparql, Person]])\n"
     );
 
@@ -170,6 +197,34 @@ public class SparqlClassTableTest {
         + "Person.s [java.lang.String] | Person.xmlns_name [java.lang.String]\n"
         + "------------------------------------------------------------------\n"
         + "http://www.example.com/id/janedoe [java.lang.String] | Jane Doe [java.lang.String]\n"
+    );
+  }
+
+  @Test
+  public void testSelectProjectLimit1000() throws SQLException {
+    String query = ""
+        + "SELECT s, xmlns_name "
+        + "FROM Person "
+        + "LIMIT 1000";
+
+    checkPlan(connection, query, true, ""
+        + "LogicalSort(fetch=[1000])\n"
+        + "  LogicalProject(s=[$0], xmlns_name=[$3])\n"
+        + "    SparqlClassTableScan(table=[[sparql, Person]])\n"
+    );
+
+    checkPlan(connection, query, ""
+        + "SparqlClassToEnumerableConverter\n"
+        + "  SparqlClassSort(fetch=[1000])\n"
+        + "    SparqlClassProject(s=[$0], xmlns_name=[$3])\n"
+        + "      SparqlClassTableScan(table=[[sparql, Person]])\n"
+    );
+
+    checkResults(connection, query, true, false, ""
+        + "Person.s [java.lang.String] | Person.xmlns_name [java.lang.String]\n"
+        + "------------------------------------------------------------------\n"
+        + "http://www.example.com/id/janedoe [java.lang.String] | Jane Doe [java.lang.String]\n"
+        + "http://www.example.com/id/johndoe [java.lang.String] | John Doe [java.lang.String]\n"
     );
   }
 

@@ -48,21 +48,19 @@ public interface SparqlClassRel extends RelNode {
     public String getQuery() {
       props.add(0, new Pair<>("s", "_ID_"));
 
-      String selectClause;
-      if (projects.isEmpty()) {
-        selectClause = props.stream()
+      List<Pair<String, String>> select = projects.isEmpty() ?
+          props :
+          projects.stream().map(idx -> props.get(idx)).collect(Collectors.toList());
+
+      String selectClause = select.stream()
                             .map(pair -> String.format("?%s", pair.getKey()))
                             .collect(Collectors.joining(" "));
-      } else {
-        selectClause = projects.stream()
-                               .map(idx -> props.get(idx))
-                               .map(pair -> String.format("?%s", pair.getKey()))
-                               .collect(Collectors.joining(" "));
-      }
 
-      String typeClause = String.format("<%s>", classes.values().toArray()[0]);
+      // TODO: this should be in its own class - here the type class should be mandatory
+      String typeClause = classes.values().isEmpty() ? "" : String.format("?s a <%s> .", classes.values().toArray()[0]);
 
       String whereClause = props.stream()
+                                .filter(entry -> !entry.getValue().equals("_ID_"))
                                 .map(entry -> String.format("OPTIONAL { ?s <%s> ?%s }", entry.getValue(), entry.getKey()))
                                 .collect(Collectors.joining("\n    "));
 
@@ -79,10 +77,10 @@ public interface SparqlClassRel extends RelNode {
       String limitClause = limit > 0 ? "LIMIT " + limit : "";
 
       return String.format(""
-              + "SELECT DISTINCT %s\n"
+              + "SELECT %s\n"
               + "WHERE {\n"
               + "  GRAPH ?g {\n"
-              + "    ?s a %s .\n"
+              + "    %s\n"
               + "    %s\n"
               + "  }\n"
               + "%s"

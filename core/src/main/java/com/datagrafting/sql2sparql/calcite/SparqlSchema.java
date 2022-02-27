@@ -24,6 +24,7 @@ import org.apache.calcite.schema.Table;
 import org.apache.calcite.schema.impl.AbstractSchema;
 
 import com.datagrafting.sql2sparql.calcite.config.Config;
+import com.datagrafting.sql2sparql.calcite.config.TableMapping;
 import com.datagrafting.sql2sparql.calcite.config.TableMode;
 import com.datagrafting.sql2sparql.sparql.SparqlEndpoint;
 
@@ -31,12 +32,14 @@ public class SparqlSchema extends AbstractSchema {
   private Map<String, Table> tableMap;
   private final SparqlEndpoint endpoint;
   private final TableMode tableMode;
+  private final Config config;
   private final SchemaPlus parentSchema;
   private final String name;
 
   public SparqlSchema(Config config, SchemaPlus parentSchema, String name) throws SQLException {
     this.endpoint = new SparqlEndpoint(config.getEndpoint());
     this.tableMode = config.getTableMode();
+    this.config = config;
     this.parentSchema = parentSchema;
     this.name = name;
   }
@@ -50,6 +53,7 @@ public class SparqlSchema extends AbstractSchema {
         throw new RuntimeException("SQL exception", e);
       }
     }
+
     return tableMap;
   }
 
@@ -57,20 +61,35 @@ public class SparqlSchema extends AbstractSchema {
     Map<String, Table> tableMap = new HashMap<>();
     Map<String, String> tableProps = new HashMap<>();
 
-    if (tableMode == TableMode.PROPERTY) {
-      tableProps.putAll(endpoint.getProperties());
+    switch (tableMode) {
+      case PROPERTY:
+        tableProps.putAll(endpoint.getProperties());
 
-      for (Map.Entry<String, String> tableProp : tableProps.entrySet()) {
-        tableMap.put(tableProp.getKey(), new SparqlPropTable(tableProp.getKey(), tableProp.getValue(), endpoint));
-      }
-    } else if (tableMode == TableMode.CLASS) {
-      tableProps.putAll(endpoint.getClasses());
+        for (Map.Entry<String, String> tableProp : tableProps.entrySet()) {
+          tableMap.put(tableProp.getKey(), new SparqlPropTable(tableProp.getKey(), tableProp.getValue(), endpoint));
+        }
 
-      for (Map.Entry<String, String> tableProp : tableProps.entrySet()) {
-        tableMap.put(tableProp.getKey(), new SparqlClassTable(tableProp.getKey(), tableProp.getValue(), endpoint));
-      }
-    } else {
-      throw new RuntimeException("Unsupported table mode " + tableMode);
+        break;
+
+      case CLASS:
+        tableProps.putAll(endpoint.getClasses());
+
+        for (Map.Entry<String, String> tableProp : tableProps.entrySet()) {
+          tableMap.put(tableProp.getKey(), new SparqlClassTable(tableProp.getKey(), tableProp.getValue(), endpoint));
+        }
+
+        break;
+
+      case MAPPING:
+        for (TableMapping tableMapping : config.getTableMappings()) {
+          // TODO: should remove "MAP" param
+          tableMap.put(tableMapping.getName(), new SparqlMappingTable(tableMapping.getName(), "MAP", tableMapping, endpoint));
+        }
+
+        break;
+
+      default:
+        throw new RuntimeException("Unsupported table mode " + tableMode);
     }
 
     return tableMap;

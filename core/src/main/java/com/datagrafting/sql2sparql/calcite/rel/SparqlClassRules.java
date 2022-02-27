@@ -18,12 +18,8 @@ package com.datagrafting.sql2sparql.calcite.rel;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.calcite.adapter.enumerable.EnumerableLimit;
 import org.apache.calcite.plan.Convention;
-import org.apache.calcite.plan.RelOptCluster;
 import org.apache.calcite.plan.RelOptRule;
-import org.apache.calcite.plan.RelOptRuleCall;
-import org.apache.calcite.plan.RelRule;
 import org.apache.calcite.plan.RelTraitSet;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.convert.ConverterRule;
@@ -34,49 +30,10 @@ import org.apache.calcite.rex.RexNode;
 
 public class SparqlClassRules {
   public static final List<RelOptRule> RULES = Arrays.asList(
-      SparqlClassRules.SparqlLimitRule.Config.DEFAULT.toRule(),
       SparqlProjectRule.INSTANCE,
       SparqlSortRule.INSTANCE,
       SparqlFilterRule.INSTANCE
   );
-
-  // TODO: "convert" to ConverterRule?
-  public static class SparqlLimitRule extends RelRule<SparqlClassRules.SparqlLimitRule.Config> {
-    protected SparqlLimitRule(SparqlClassRules.SparqlLimitRule.Config config) {
-      super(config);
-    }
-
-    @Override
-    public void onMatch(RelOptRuleCall call) {
-      final EnumerableLimit limit = call.rel(0);
-      final RelNode converted = convert(limit);
-      if (converted != null) {
-        call.transformTo(converted);
-      }
-    }
-
-    public RelNode convert(RelNode rel) {
-      final EnumerableLimit limit = (EnumerableLimit) rel;
-      RelOptCluster cluster = limit.getCluster();
-      RelTraitSet traitSet = limit.getTraitSet().replace(SparqlClassRel.CONVENTION);
-      return new SparqlClassLimit(cluster, traitSet, convert(limit.getInput(), SparqlClassRel.CONVENTION), limit.fetch);
-    }
-
-    public interface Config extends RelRule.Config {
-      SparqlClassRules.SparqlLimitRule.Config DEFAULT = EMPTY
-          .withOperandSupplier(b0 ->
-              b0.operand(EnumerableLimit.class)
-                .oneInput(b1 ->
-                    b1.operand(SparqlClassToEnumerableConverter.class)
-                      .anyInputs()))
-          .as(SparqlClassRules.SparqlLimitRule.Config.class);
-
-      @Override
-      default SparqlClassRules.SparqlLimitRule toRule() {
-        return new SparqlClassRules.SparqlLimitRule(this);
-      }
-    }
-  }
 
   private static class SparqlProjectRule extends ConverterRule {
     private static final SparqlClassRules.SparqlProjectRule INSTANCE = Config.INSTANCE

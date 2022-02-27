@@ -16,7 +16,7 @@
 package com.datagrafting.sql2sparql.calcite.rel;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.calcite.plan.RelOptCluster;
 import org.apache.calcite.plan.RelOptPlanner;
@@ -26,17 +26,14 @@ import org.apache.calcite.plan.RelTraitSet;
 import org.apache.calcite.rel.core.TableScan;
 import org.apache.calcite.util.Pair;
 
-public class SparqlClassTableScan extends TableScan implements SparqlClassRel {
-  private String tableName;
-  private String classUri;
-  private List<Pair<String, String>> props;
+import com.datagrafting.sql2sparql.calcite.config.TableMapping;
 
-  public SparqlClassTableScan(RelOptCluster cluster, RelTraitSet traitSet, RelOptTable relOptTable,
-                              String tableName, String classUri, List<Pair<String, String>> props) {
+public class SparqlMappingTableScan extends TableScan implements SparqlClassRel {
+  private final TableMapping tableMapping;
+
+  public SparqlMappingTableScan(RelOptCluster cluster, RelTraitSet traitSet, RelOptTable relOptTable, TableMapping tableMapping) {
     super(cluster, traitSet, new ArrayList<>(), relOptTable);
-    this.tableName = tableName;
-    this.classUri = classUri;
-    this.props = props;
+    this.tableMapping = tableMapping;
 
     assert getConvention() == SparqlClassRel.CONVENTION;
   }
@@ -44,10 +41,10 @@ public class SparqlClassTableScan extends TableScan implements SparqlClassRel {
   @Override
   public void register(RelOptPlanner planner) {
     // for (RelOptRule rule : planner.getRules()) {
-    //   planner.removeRule(rule);
+    //     planner.removeRule(rule);
     // }
 
-    // E.g. of removing rule:
+    // E.g. or removing rule:
     // planner.removeRule(ReduceExpressionsRule.FilterReduceExpressionsRule.Config.DEFAULT.toRule());
 
     planner.addRule(SparqlClassToEnumerableConverterRule.INSTANCE);
@@ -59,7 +56,9 @@ public class SparqlClassTableScan extends TableScan implements SparqlClassRel {
   @Override
   public void implement(Implementor implementor) {
     implementor.table = table;
-    implementor.classes.put(this.tableName, this.classUri);
-    implementor.props.addAll(props);
+    implementor.props.addAll(tableMapping.getColumns().stream()
+                                         .map(item -> new Pair<String, String>(item.getName(), item.getProperty()))
+                                         .collect(Collectors.toList())
+    );
   }
 }

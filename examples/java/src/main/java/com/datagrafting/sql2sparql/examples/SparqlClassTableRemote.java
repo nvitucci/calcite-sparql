@@ -36,7 +36,7 @@ public class SparqlClassTableRemote {
     Connection connection = DriverManager.getConnection("jdbc:calcite:model=" + Objects.requireNonNull(modelPath).getPath(), info);
     
     String query = ""
-        + "SELECT * "
+        + "SELECT w3_label, w3_comment, xmlns_name, xmlns_homepage, xmlns_depiction "
         + "FROM Company "
         + "LIMIT 10";
 
