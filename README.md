@@ -142,4 +142,4 @@ If you use this project in an article, please cite it as specified in the [CITAT
 
 Many thanks to:
 
-- [Paul Jackson](https://github.com/PaulJackson123) for interesting discussions on the mapping from RDF to SQL schema mapping.
+- [Paul Jackson](https://github.com/PaulJackson123) for interesting discussions on the mapping from RDF to SQL schema.
